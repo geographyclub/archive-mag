@@ -1,5 +1,7 @@
 # archive-mag
 
+A website that shows random images from the past.
+
 ## Scrape archive.org  
 
 Use advanced search.  
