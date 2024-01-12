@@ -45,7 +45,7 @@ jq -c '.response.docs[]' archive_1990_image_details.json | while read -r obj; do
 
   # Find the corresponding URL from the text file
   url_line=$(grep "download/${identifier}/" archive_1990_image_urls.txt)
-  url=$(echo "$url_line" | awk '{print $NF}')
+  url=$(echo "$url_line" | awk '{print $NF}' | sed 's/\\n/\\\\n/g')
 
   # Add the "url" field to the current object
   updated_obj=$(echo "$obj" | jq --arg url "$url" '. + { "url": $url }')
