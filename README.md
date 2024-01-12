@@ -1,6 +1,6 @@
 # archive-mag
 
-A website that shows random images from the past.
+A website that shows random images by year from archive.org.
 
 ## Get details from archive.org  
 
@@ -23,14 +23,37 @@ for a in {2..23}; do
 done
 ```
 
-## Process json
+## Download images
 
 Get image urls.  
 ```bash
-rm archive_1990_image_urls.txt
-cat archive_1990_images.json | jq -r '.response.docs[].identifier' | while read identifier; do
+#rm archive_1990_image_urls.txt
+cat archive_1990_image_details.json | jq -r '.response.docs[].identifier' | while read identifier; do
   curl "https://archive.org/download/${identifier}" | grep "a href=" | grep ".jpg" | grep -v "_thumb" | sed -e 's/^.*href="/https:\/\/archive\.org\/download\/'"${identifier}"'\//g' -e 's/">.*$//g' >> archive_1990_image_urls.txt
 done
+```
 
+Add urls to json.  
+```bash
+# Create a temporary file to store the updated JSON
+tmp_file=$(mktemp)
 
+# Loop through each object in the JSON array
+jq -c '.response.docs[]' archive_1990_image_details.json | while read -r obj; do
+  # Extract identifier from the object
+  identifier=$(echo "$obj" | jq -r '.identifier')
+
+  # Find the corresponding URL from the text file
+  url_line=$(grep "download/${identifier}/" archive_1990_image_urls.txt)
+  url=$(echo "$url_line" | awk '{print $NF}')
+
+  # Add the "url" field to the current object
+  updated_obj=$(echo "$obj" | jq --arg url "$url" '. + { "url": $url }')
+
+  # Append the updated object to the temporary file
+  echo "$updated_obj" >> "$tmp_file"
+done
+
+# Create the final output file
+mv "$tmp_file" output.json
 ```
