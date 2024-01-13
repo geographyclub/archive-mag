@@ -39,6 +39,9 @@ Add urls to json.
 # Create a temporary file to store the updated JSON
 tmp_file=$(mktemp)
 
+# Start the array in the temporary file
+echo "[" > "$tmp_file"
+
 # Loop through each object in the JSON array
 jq -c '.response.docs[]' archive_1990_image_details.json | while read -r obj; do
   # Extract identifier from the object
@@ -50,21 +53,16 @@ jq -c '.response.docs[]' archive_1990_image_details.json | while read -r obj; do
   # If URL is not empty, insert the "url" field at the end of each JSON object
   if [ -n "$url" ]; then
     # Construct the updated object with the "url" field
-    updated_obj=$(echo "$obj" | jq --arg url "$url" '. + { "url": $url }')
+    updated_obj=$(echo "$obj" | jq --arg url "$url" '. + { "url": $url }' | tr -d '\n' | tr -s ' ')
 
     # Append the updated object to the temporary file
-    echo "$updated_obj" >> "$tmp_file"
-  else
-    # If URL is empty, append the original object to the temporary file
-    echo "$obj" >> "$tmp_file"
+    echo "$updated_obj," >> "$tmp_file"
   fi
 done
 
-# Create output file
-mv "$tmp_file" output.json
+# Remove the trailing comma and close the array in the temporary file
+sed -i '$s/,$/]/' "$tmp_file"
 
-# make single-line file (for js fetch)
-echo "[" > output_single_line.json
-jq -c . output.json | paste -sd "," - >> output_single_line.json
-echo "]" >> output_single_line.json
+# Create the final output file
+mv "$tmp_file" output.json
 ```
