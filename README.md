@@ -43,17 +43,23 @@ jq -c '.response.docs[]' archive_1990_image_details.json | while read -r obj; do
   # Extract identifier from the object
   identifier=$(echo "$obj" | jq -r '.identifier')
 
-  # Find the corresponding URL from the text file
-  url_line=$(grep "download/${identifier}/" archive_1990_image_urls.txt)
-  url=$(echo "$url_line" | awk '{print $NF}' | sed 's/\\n/\\\\n/g')
+  # Find the corresponding URL from the text file and take only the first one
+  url=$(grep "download/${identifier}/" archive_1990_image_urls.txt | awk '{print $NF; exit}')
 
-  # Add the "url" field to the current object
-  updated_obj=$(echo "$obj" | jq --arg url "$url" '. + { "url": $url }')
+  # If URL is not empty, insert the "url" field at the end of each JSON object
+  if [ -n "$url" ]; then
+    # Construct the updated object with the "url" field
+    updated_obj=$(echo "$obj" | jq --arg url "$url" '. + { "url": $url }')
 
-  # Append the updated object to the temporary file
-  echo "$updated_obj" >> "$tmp_file"
+    # Append the updated object to the temporary file
+    echo "$updated_obj" >> "$tmp_file"
+  else
+    # If URL is empty, append the original object to the temporary file
+    echo "$obj" >> "$tmp_file"
+  fi
 done
 
 # Create the final output file
 mv "$tmp_file" output.json
+
 ```
