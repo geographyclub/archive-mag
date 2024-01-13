@@ -64,7 +64,7 @@ resultContainer.appendChild(div);
 div.classList.add(`flex-column`);
 
 // add images
-contentToAppend = `<div class="image-container"><img src="${urlValue}"></div>`;
+contentToAppend = `<div class="image-container"><img class="image" src="${urlValue}"></div>`;
 div.innerHTML += contentToAppend;
 
   })
@@ -75,8 +75,6 @@ div.innerHTML += contentToAppend;
   
 } <!-- end fetch function -->
 fetchData();
-
-
 </script>
 
 <!-- close menu -->
