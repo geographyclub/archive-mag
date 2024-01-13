@@ -63,6 +63,8 @@ done
 # Create output file
 mv "$tmp_file" output.json
 
-# make single-line file
-jq -c . output.json > output_single_line.json
+# make single-line file (for js fetch)
+echo "[" > output_single_line.json
+jq -c . output.json | paste -sd "," - >> output_single_line.json
+echo "]" >> output_single_line.json
 ```
