@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:300,600,900" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<title>Archive Mag</title>
+</head>
+<body>
+
+<header>
+<div><a href="#"><h2 style="font-size:12px; letter-spacing:0;"><span style="font-size:20px; vertical-align:middle;">&#x1F56E; </span><span style="vertical-align:middle;">archive</span><span style="vertical-align:middle">mag</span></h2></a></div>
+<div class="menu-icon">&#9776;</div>
+<nav>
+<a href="#" onclick="closeMenu()">Home</a>
+<a href="https://github.com/geographyclub/factbook" target="_blank">Github Readme</a>
+<a href="https://geographyclub.github.io/" target="_blank">Steven Kim</a>
+<!--<a href="#" onclick="scrollToSection('Brunei');">Brunei</a>-->
+</nav>
+</header>
+
+<div class="border-container"><div class="color-block"></div><div class="color-block"></div><div class="color-block"></div></div>
+
+<div class="flex-container">
+  <div id="resultContainer" class="flex-container"></div>
+</div>
+
+<script>
+function fetchData() {
+
+var jsonFileUrl = 'https://raw.githubusercontent.com/geographyclub/archive-mag/main/data/output.json';
+
+return fetch(jsonFileUrl)
+  .then(response => response.json())
+  .then(jsonData => {
+    const docs = jsonData;
+
+    // Get a random index
+    const randomIndex = Math.floor(Math.random() * docs.length);
+
+    // Get a random item
+    const randomItem = docs[randomIndex];
+
+    // Accessing values of "identifier", "date", "description", and "title" for the random item
+    const identifierValue = randomItem.identifier;
+    const dateValue = randomItem.date;
+    const descriptionValue = randomItem.description;
+    const titleValue = randomItem.title;
+    const urlValue = randomItem.url;
+
+    // Now you can use these values for the random item
+    console.log("Random Item - Identifier:", identifierValue);
+    console.log("Random Item - Date:", dateValue);
+    console.log("Random Item - Description:", descriptionValue);
+    console.log("Random Item - Title:", titleValue);
+    console.log("Random Item - Url:", urlValue);
+
+// start div
+const div = document.createElement('div');
+resultContainer.appendChild(div);
+div.classList.add(`flex-column`);
+
+// add images
+contentToAppend = `<div class="image-container"><img src="${urlValue}"></div>`;
+div.innerHTML += contentToAppend;
+
+  })
+  .catch(error => {
+    console.error("Error fetching or parsing JSON:", error);
+  });
+  
+  
+} <!-- end fetch function -->
+fetchData();
+
+
+</script>
+
+<!-- close menu -->
+<script>
+document.querySelector('.menu-icon').addEventListener('click', function () {
+document.querySelector('nav').classList.toggle('show');
+});
+function closeMenu() {
+document.querySelector('nav').classList.remove('show');
+}
+</script>
+
+<!-- scroll to section with offset -->
+<script>
+function scrollToSection(sectionId) {
+const targetSection = document.getElementById(sectionId);
+const offset = 50;
+
+if (targetSection) {
+window.scrollTo({
+top: targetSection.offsetTop - offset,
+behavior: 'smooth'
+});
+}
+event.preventDefault();
+closeMenu();
+}
+</script>
+
+</body>
+</html>
