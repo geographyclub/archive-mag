@@ -6,6 +6,7 @@ A website that shows random images by year from archive.org.
 
 Use advanced search.  
 ```bash
+# get all images from 1990
 curl "https://archive.org/advancedsearch.php?q=year%3A1990+AND+mediatype%3Aimage&fl%5B%5D=date&fl%5B%5D=year&fl%5B%5D=description&fl%5B%5D=identifier&fl%5B%5D=publisher&fl%5B%5D=subject&fl%5B%5D=title&rows=1000000000&output=json" > archive_1990_image_details.json
 ```
 
@@ -23,7 +24,7 @@ for a in {2..23}; do
 done
 ```
 
-## Download images
+## Get images
 
 Get image urls.  
 ```bash
@@ -59,7 +60,9 @@ jq -c '.response.docs[]' archive_1990_image_details.json | while read -r obj; do
   fi
 done
 
-# Create the final output file
+# Create output file
 mv "$tmp_file" output.json
 
+# make single-line file
+jq -c . output.json > output_single_line.json
 ```
