@@ -1,13 +1,14 @@
 # archive-mag
 
-A website that shows random images by year from archive.org.
+Website and scraper for archive.org.
 
 ## Get details from archive.org  
 
 Use advanced search.  
 ```bash
-# get all images from 1990
-curl "https://archive.org/advancedsearch.php?q=year%3A1990+AND+mediatype%3Aimage&fl%5B%5D=date&fl%5B%5D=year&fl%5B%5D=description&fl%5B%5D=identifier&fl%5B%5D=publisher&fl%5B%5D=subject&fl%5B%5D=title&rows=1000000000&output=json" > archive_1990_image_details.json
+# get details
+url='https://archive.org/advancedsearch.php?q=-collection:afghanmediaresourcecenter+AND+year:1990+AND+mediatype:image&fl[]=year&fl[]=description&fl[]=identifier&fl[]=publisher&fl[]=subject&fl[]=title&rows=1000000000&output=json'
+curl ${url} > archive_1990_image_details.json
 ```
 
 Use scraping service.  
@@ -28,14 +29,15 @@ done
 
 Get image urls.  
 ```bash
-#rm archive_1990_image_urls.txt
+rm archive_1990_image_urls.txt
 cat archive_1990_image_details.json | jq -r '.response.docs[].identifier' | while read identifier; do
-  curl "https://archive.org/download/${identifier}" | grep "a href=" | grep ".jpg" | grep -v "_thumb" | sed -e 's/^.*href="/https:\/\/archive\.org\/download\/'"${identifier}"'\//g' -e 's/">.*$//g' >> archive_1990_image_urls.txt
+  curl "https://archive.org/download/${identifier}" | grep "a href=" | grep -E '\.jpg|\.png' | grep -v "_thumb" | sed -e 's/^.*href="/https:\/\/archive\.org\/download\/'"${identifier}"'\//g' -e 's/">.*$//g' >> archive_1990_image_urls.txt
 done
 ```
 
 Add urls to json.  
 ```bash
+file=archive_1990_image_urls.txt
 # Create a temporary file to store the updated JSON
 tmp_file=$(mktemp)
 
@@ -64,5 +66,5 @@ done
 sed -i '$s/,$/]/' "$tmp_file"
 
 # Create the final output file
-mv "$tmp_file" output.json
+mv "$tmp_file" ${file%.*}.json
 ```

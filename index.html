@@ -16,7 +16,7 @@
 <div class="menu-icon">&#9776;</div>
 <nav>
 <a href="#" onclick="closeMenu()">Home</a>
-<a href="https://github.com/geographyclub/factbook" target="_blank">Github Readme</a>
+<a href="https://github.com/geographyclub/factbook" target="_blank">Github Repo</a>
 <a href="https://geographyclub.github.io/" target="_blank">Steven Kim</a>
 <!--<a href="#" onclick="scrollToSection('Brunei');">Brunei</a>-->
 </nav>
@@ -25,14 +25,14 @@
 <div class="border-container"><div class="color-block"></div><div class="color-block"></div><div class="color-block"></div></div>
 
 <div class="container">
-  <div class="flex-container"><div class="flex-column-wide" style="padding:10px 0"><h1>The World in 1990</h1></div></div>
+  <div class="flex-container"><div class="flex-column-wide" style="padding:10px 0;"><h1>1990</h1><h2>in random photos</h2></div></div>
   <div id="resultContainer" class="flex-container"></div>
 </div>
 
 <script>
 function fetchData() {
 
-var jsonFileUrl = 'https://raw.githubusercontent.com/geographyclub/archive-mag/main/data/output.json';
+var jsonFileUrl = 'https://raw.githubusercontent.com/geographyclub/archive-mag/main/data/archive_1990_image_urls.json';
 
 return fetch(jsonFileUrl)
   .then(response => response.json())
