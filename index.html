@@ -47,14 +47,12 @@ return fetch(jsonFileUrl)
 
     // Accessing values of "identifier", "date", "description", and "title" for the random item
     const identifierValue = randomItem.identifier;
-    const dateValue = randomItem.date;
     const descriptionValue = randomItem.description;
     const titleValue = randomItem.title;
-    const urlValue = randomItem.url;
+    const urlValue = 'https://archive.org/download/'+randomItem.identifier+'/__ia_thumb.jpg';
 
     // Now you can use these values for the random item
     console.log("Random Item - Identifier:", identifierValue);
-    console.log("Random Item - Date:", dateValue);
     console.log("Random Item - Description:", descriptionValue);
     console.log("Random Item - Title:", titleValue);
     console.log("Random Item - Url:", urlValue);
@@ -75,7 +73,11 @@ div.innerHTML += contentToAppend;
   
   
 } <!-- end fetch function -->
+
+
 fetchData();
+
+
 </script>
 
 <!-- close menu -->
